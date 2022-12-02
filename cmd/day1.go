@@ -9,8 +9,8 @@ var day1Cmd = &cobra.Command{
 	Use:   "day1",
 	Short: "Execute the solution for day 1",
 	Long:  "Execute the solution for day 1",
-	Run: func(cmd *cobra.Command, args []string) {
-		day1.Execute()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return day1.Execute()
 	},
 }
 

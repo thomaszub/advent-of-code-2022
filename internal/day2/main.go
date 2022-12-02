@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
-func Execute() {
+func Execute() error {
 	fmt.Println("*** Day 2 ***")
+	return nil
 }

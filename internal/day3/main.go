@@ -18,38 +18,51 @@ func Execute() error {
 	content := string(bytes)
 	lines := strings.Split(content, "\n")
 
-	sum := 0
+	rucksacks, err := makeRucksacks(lines)
+	if err != nil {
+		return err
+	}
 
-	for _, line := range lines {
-		if line == "" {
-			continue
+	sum := 0
+	for i := 0; i <= len(rucksacks)-3; i += 3 {
+		group := rucksacks[i : i+3]
+		sameP := findSame(group[0], group[1])
+		same := findSame(sameP, group[2])
+		if len(same) < 1 {
+			return fmt.Errorf("%v does not contain exactly one equal character: %v", group, same)
 		}
-		runes := []rune(line)
-		if len(runes)%2 != 0 {
-			return fmt.Errorf("the line %s contains an uneven count of characters", line)
-		}
-		splitLen := len(runes) / 2
-		same, err := findSame(runes[:splitLen], runes[splitLen:])
-		if err != nil {
-			return err
-		}
-		sum += runeToPrio(same)
+		prio := runeToPrio(same[0])
+		sum += prio
 	}
 
 	fmt.Printf("Sum of priorities: %d\n", sum)
 	return nil
 }
 
-func findSame(first, second []int32) (int32, error) {
+func makeRucksacks(lines []string) ([][]rune, error) {
+	var groups [][]rune
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+		groups = append(groups, []rune(line))
+	}
+	if len(groups)%3 != 0 {
+		return nil, fmt.Errorf("%v does not contain a multiple of three", groups)
+	}
+	return groups, nil
+}
+
+func findSame(first, second []int32) []int32 {
+	var same []int32
 	for _, f := range first {
 		for _, s := range second {
 			if f == s {
-				return s, nil
+				same = append(same, s)
 			}
 		}
 	}
-
-	return 0, fmt.Errorf("%v and %v do not contain a same number", first, second)
+	return same
 }
 
 func runeToPrio(r rune) int {

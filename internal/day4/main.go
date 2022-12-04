@@ -19,6 +19,10 @@ func (s section) contains(other section) bool {
 	return s.lower <= other.lower && s.higher >= other.higher
 }
 
+func (s section) overlaps(other section) bool {
+	return (s.lower <= other.higher && other.higher <= s.higher) || (other.lower <= s.higher && s.higher <= other.higher)
+}
+
 type pair struct {
 	first  section
 	second section
@@ -38,14 +42,19 @@ func Execute() error {
 	}
 
 	var sumContains int
+	var sumOverlaps int
 	for _, pair := range pairs {
 		first := pair.first
 		second := pair.second
 		if first.contains(second) || second.contains(first) {
 			sumContains += 1
 		}
+		if first.overlaps(second) {
+			sumOverlaps += 1
+		}
 	}
 	fmt.Printf("containing pairs: %d\n", sumContains)
+	fmt.Printf("overlapping pairs: %d\n", sumOverlaps)
 
 	return nil
 }

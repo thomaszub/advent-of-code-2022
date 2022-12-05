@@ -47,10 +47,9 @@ func Execute() error {
 		stackFrom := &stacks[move.from-1]
 		stackTo := &stacks[move.to-1]
 		cons := stackFrom.containers
-		for id := 1; id <= move.count; id++ {
-			stackTo.containers = append(stackTo.containers, cons[len(cons)-id])
-		}
+		moved := cons[len(cons)-move.count:]
 		stackFrom.containers = stackFrom.containers[:len(stackFrom.containers)-move.count]
+		stackTo.containers = append(stackTo.containers, moved...)
 	}
 
 	var top []string

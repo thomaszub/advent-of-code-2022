@@ -9,7 +9,7 @@ import (
 //go:embed input.txt
 var file embed.FS
 
-const markerLength = 4
+const markerLength = 14
 
 func Execute() error {
 	fmt.Println("*** Day 6 ***")

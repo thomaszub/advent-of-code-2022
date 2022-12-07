@@ -3,6 +3,7 @@ package day7
 import (
 	"embed"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -68,6 +69,20 @@ func Execute() error {
 	}
 	totalSize := dirSize(rootDir)
 	fmt.Printf("Total size: %d\n", totalSize)
+
+	currFree := 70_000_000 - rootDir.size()
+
+	deleteSizes := delete(rootDir)
+	sort.Ints(deleteSizes)
+	var deleteSize int
+	for _, size := range deleteSizes {
+		if size >= 30000000-currFree {
+			deleteSize = size
+			break
+		}
+	}
+	fmt.Printf("Delete size: %d\n", deleteSize)
+
 	return nil
 }
 
@@ -121,4 +136,17 @@ func dirSize(dir directory) int {
 		}
 	}
 	return totalSize
+}
+
+func delete(dir directory) []int {
+	size := []int{dir.size()}
+	for _, cons := range dir.directoryContent {
+		switch t := cons.(type) {
+		case *directory:
+			size = append(size, delete(*t)...)
+		default:
+			continue
+		}
+	}
+	return size
 }

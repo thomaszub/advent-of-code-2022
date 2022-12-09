@@ -55,7 +55,7 @@ func Execute() error {
 		return err
 	}
 
-	num := 2
+	num := 10
 	var snake []pos
 	for id := 0; id < num; id++ {
 		snake = append(snake, pos{})
@@ -82,7 +82,19 @@ func Execute() error {
 			for id := 1; id < num; id++ {
 				tailPos := snake[id]
 				if tailMustMove(newSnake[id-1], tailPos) {
-					tailPos = snake[id-1]
+					adjX := newSnake[id-1].x - tailPos.x
+					adjY := newSnake[id-1].y - tailPos.y
+					if adjX != 0 {
+						adjX = adjX / abs(adjX)
+					}
+					if adjY != 0 {
+						adjY = adjY / abs(adjY)
+					}
+					adj := pos{
+						x: adjX,
+						y: adjY,
+					}
+					tailPos = tailPos.add(adj)
 				}
 				newSnake = append(newSnake, tailPos)
 			}
